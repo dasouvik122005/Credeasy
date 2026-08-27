@@ -3,6 +3,8 @@ import './index.css';
 
 function App() {
   const [activeTab, setActiveTab] = useState('assessment');
+  const [showSandbox, setShowSandbox] = useState(false);
+  const [simulationMonths, setSimulationMonths] = useState(1);
 
   const [formData, setFormData] = useState({
     wallet_inflow_consistency: 'Moderate Inflow',
@@ -51,6 +53,9 @@ function App() {
     e.preventDefault();
     setLoading(true);
     setResult(null);
+    setShowSandbox(false);
+    setSimulationMonths(1);
+    
     try {
       const response = await fetch('http://localhost:8000/predict', {
         method: 'POST',
@@ -66,8 +71,7 @@ function App() {
       console.warn("Backend not reachable or schema mismatch. Using dynamic mock data.");
       
       setTimeout(() => {
-        // Dynamic mock logic based on new signals
-        let riskScore = 0.20; // base risk
+        let riskScore = 0.20;
         let attributions = [];
 
         // Wallet
@@ -111,7 +115,6 @@ function App() {
           attributions.push({ type: 'negative', text: '-40 pts: Frequent Missed Utility Payments' });
         }
 
-        // Bound probability
         let finalProb = Math.max(0.05, Math.min(0.95, riskScore));
 
         setResult({
@@ -126,9 +129,41 @@ function App() {
     setLoading(false);
   };
 
+  const getCreditScore = (prob) => Math.round(850 - (prob * 550));
+  
+  const getRiskTier = (score) => {
+    if (score >= 720) return { label: 'Tier 1 - Prime (Instant Approval)', color: 'emerald' };
+    if (score >= 640) return { label: 'Tier 2 - Near-Prime (Standard Approval)', color: 'blue' };
+    if (score >= 580) return { label: 'Tier 3 - Moderate Risk (Manual Review)', color: 'amber' };
+    return { label: 'Tier 4 - Subprime (High Default Risk)', color: 'red' };
+  };
+
+  const baseScore = result ? getCreditScore(result.probability_of_default) : 0;
+  const projectedScore = result ? Math.min(850, baseScore + (simulationMonths * 8)) : 0;
+  const tier = getRiskTier(baseScore);
+  const projTier = getRiskTier(projectedScore);
+
+  const payloadString = result ? JSON.stringify({
+    request: formData,
+    response: {
+      probability_of_default: result.probability_of_default,
+      prediction_class: result.prediction_class,
+      credit_score: baseScore,
+      risk_tier: tier.label,
+      shap_attributions: result.shap_attributions,
+      latency_ms: "118ms",
+      model: "lightgbm_v2.1"
+    }
+  }, null, 2) : "";
+
+  const copyJson = () => {
+    navigator.clipboard.writeText(payloadString);
+    alert("JSON Copied to Clipboard!");
+  };
+
   return (
     <div className="fintech-dashboard">
-      <aside className="sidebar">
+      <aside className="sidebar no-print">
         <div className="brand">
           <div className="logo-mark"></div>
           <h2>AltCredit AI</h2>
@@ -143,13 +178,13 @@ function App() {
       <main className="main-content">
         {activeTab === 'assessment' && (
           <>
-            <header className="top-header">
+            <header className="top-header no-print">
               <h1>NTC Application Assessment</h1>
               <p>Predicting default risk using alternative behavioral signals for thin-file borrowers.</p>
             </header>
 
             <div className="dashboard-grid">
-              <div className="panel input-panel">
+              <div className="panel input-panel no-print">
                 <div className="panel-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <h3>Applicant Signals</h3>
                 </div>
@@ -163,7 +198,6 @@ function App() {
                 <form onSubmit={handleSubmit} className="fintech-form" style={{ paddingTop: '1rem' }}>
                   <div className="form-section">
                     <h4>Alternative Data Signals</h4>
-                    
                     <div className="input-row">
                       <div className="input-group full-width">
                         <label>Wallet Inflow Consistency</label>
@@ -175,7 +209,6 @@ function App() {
                         </select>
                       </div>
                     </div>
-                    
                     <div className="input-row">
                       <div className="input-group">
                         <label>SIM Tenure</label>
@@ -195,7 +228,6 @@ function App() {
                         </select>
                       </div>
                     </div>
-                    
                     <div className="input-row">
                       <div className="input-group full-width">
                         <label>Utility Payment Discipline</label>
@@ -249,32 +281,55 @@ function App() {
                 </form>
               </div>
 
-              <div className="panel results-panel">
-                <div className="panel-header">
+              <div className="panel results-panel printable-panel">
+                <div className="panel-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <h3>Analysis Results</h3>
+                  {result && (
+                    <div className="panel-actions no-print">
+                      <button className="btn-icon" onClick={() => setShowSandbox(!showSandbox)}>
+                        &lt;/&gt; View API Payload
+                      </button>
+                    </div>
+                  )}
                 </div>
                 
                 {!result && !loading && (
-                  <div className="empty-state">
+                  <div className="empty-state no-print">
                     <div className="empty-icon"></div>
                     <p>Submit an application to see the AI prediction.</p>
                   </div>
                 )}
 
                 {loading && (
-                  <div className="loading-state">
+                  <div className="loading-state no-print">
                     <div className="pulsing-circle"></div>
                     <p>Analyzing behavioral signals...</p>
                   </div>
                 )}
 
+                {result && showSandbox && (
+                  <div className="sandbox-drawer no-print fade-in">
+                    <div className="sandbox-header">
+                      <h4>Developer Sandbox</h4>
+                      <button className="btn-copy" onClick={copyJson}>Copy JSON</button>
+                    </div>
+                    <pre className="code-block">
+                      <code>{payloadString}</code>
+                    </pre>
+                  </div>
+                )}
+
                 {result && !loading && (
                   <div className="results-content fade-in">
-                    <div className={`status-banner ${result.prediction_class === 1 ? 'status-danger' : 'status-success'}`}>
-                      <div className="status-icon"></div>
-                      <div className="status-text">
-                        <h4>{result.prediction_class === 1 ? 'High Risk Profile' : 'Approval Recommended'}</h4>
-                        <p>{result.prediction_class === 1 ? 'Applicant exhibits patterns correlated with default.' : 'Applicant fits standard approval parameters.'}</p>
+                    <div className="score-header">
+                      <div className="gauge-container">
+                        <div className={`score-value color-${tier.color}`}>{simulationMonths > 1 ? projectedScore : baseScore}</div>
+                        <div className="score-max">/ 850</div>
+                      </div>
+                      <div className="tier-info">
+                        <div className={`tier-badge bg-${simulationMonths > 1 ? projTier.color : tier.color}`}>
+                          {simulationMonths > 1 ? projTier.label : tier.label}
+                        </div>
                       </div>
                     </div>
 
@@ -289,21 +344,6 @@ function App() {
                       </div>
                     </div>
 
-                    <div className="data-visualization">
-                      <h4>Risk Tolerance Threshold</h4>
-                      <div className="threshold-bar">
-                        <div className="threshold-marker" style={{ left: `${result.probability_of_default * 100}%` }}></div>
-                        <div className="threshold-zone safe"></div>
-                        <div className="threshold-zone warning"></div>
-                        <div className="threshold-zone danger"></div>
-                      </div>
-                      <div className="threshold-labels">
-                        <span>Safe (0-30%)</span>
-                        <span>Review (30-60%)</span>
-                        <span>Reject (60%+)</span>
-                      </div>
-                    </div>
-
                     <div className="shap-section">
                       <h4>SHAP Decision Attribution (Why this score?)</h4>
                       <div className="shap-list">
@@ -314,6 +354,38 @@ function App() {
                         ))}
                       </div>
                     </div>
+
+                    <div className="simulation-section no-print">
+                      <h4>Simulate Credit Improvement</h4>
+                      <div className="slider-container">
+                        <label>Simulate On-time Payment Streak (Months): {simulationMonths}</label>
+                        <input 
+                          type="range" 
+                          className="slider-control" 
+                          min="1" 
+                          max="12" 
+                          value={simulationMonths} 
+                          onChange={(e) => setSimulationMonths(Number(e.target.value))} 
+                        />
+                      </div>
+                      {simulationMonths > 1 && (
+                        <div className="simulation-feedback fade-in">
+                          <p>
+                            Maintaining positive financial signals for <strong>+{simulationMonths} months</strong> projects a score increase of <strong>+{(simulationMonths * 8)} pts</strong> to <strong className={`color-${projTier.color}`}>{projectedScore}</strong>.
+                          </p>
+                          {projectedScore >= 720 && baseScore < 720 && (
+                            <p className="unlock-text">⭐ Unlocks Instant Prime Approval!</p>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="export-section no-print" style={{ marginTop: '2rem', borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
+                       <button className="btn-primary" onClick={() => window.print()}>
+                         Export Decision Brief
+                       </button>
+                    </div>
+
                   </div>
                 )}
               </div>
@@ -322,7 +394,7 @@ function App() {
         )}
 
         {activeTab === 'metrics' && (
-          <div className="metrics-view fade-in">
+          <div className="metrics-view fade-in no-print">
             <header className="top-header">
               <h1>Model Metrics & Fairness</h1>
               <p>Audit reports and benchmark comparisons for the production ML engine.</p>
