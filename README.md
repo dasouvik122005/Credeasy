@@ -20,7 +20,6 @@ Credeasy is a full-stack machine-learning application that predicts loan default
 - [Data & ML Pipeline](#-data--ml-pipeline)
 - [Features](#-features)
 - [Tech Stack](#-tech-stack)
-- [Project Structure](#-project-structure)
 - [Getting Started](#-getting-started)
 - [API Reference](#-api-reference)
 - [Testing](#-testing)
@@ -157,56 +156,6 @@ flowchart LR
 | pytest | Unit testing framework |
 | Loguru | Structured, colorized logging |
 | Flake8 / Bandit | Linting and security analysis |
-
----
-
-## 📁 Project Structure
-
-```
-AltCreditScoreAI/
-├── 📄 run_pipeline.py              # Entry point — runs the full training pipeline
-├── 📄 requirements.txt             # Python dependencies
-│
-├── 📂 data/
-│   └── alt_credit_data.csv         # Alternative credit dataset (1,000 records)
-│
-├── 📂 src/
-│   ├── __init__.py
-│   ├── 📂 preprocessing/
-│   │   ├── load_data.py            # CSV loader with Loguru logging
-│   │   └── cleaning.py            # Drop nulls, dupes; normalize column names
-│   ├── 📂 feature_engineering/
-│   │   └── features.py            # One-hot encoding, MinMax scaling, inference preprocessor
-│   ├── 📂 models/
-│   │   └── train_model.py         # Trains LogReg, XGBoost, LightGBM; serializes best model
-│   ├── 📂 evaluation/
-│   │   └── evaluate.py            # Accuracy, Precision, Recall, F1, ROC AUC, visual plots
-│   └── 📂 api/
-│       └── main.py                # FastAPI app — /predict endpoint with CORS
-│
-├── 📂 models/                      # Serialized ML artifacts (auto-generated)
-│   ├── log_model.pkl               # Trained Logistic Regression model
-│   ├── scaler.pkl                  # Fitted MinMaxScaler
-│   ├── features.pkl                # Expected feature column list
-│   └── numeric_cols.pkl            # Numeric column names for scaling
-│
-├── 📂 dashboard/                   # React frontend application
-│   ├── index.html
-│   ├── package.json
-│   ├── vite.config.js
-│   └── 📂 src/
-│       ├── main.jsx                # React entry point
-│       ├── App.jsx                 # Main dashboard component (form + results + recs)
-│       ├── App.css                 # Component-level styles
-│       └── index.css               # Global design system (dark mode, glassmorphism)
-│
-└── 📂 tests/                       # Unit test suite
-    ├── conftest.py                 # Path configuration for test discovery
-    ├── test_cleaning.py            # Tests for data cleaning pipeline
-    ├── test_features.py            # Tests for feature engineering
-    ├── test_train_model.py         # Tests for model training
-    └── test_evaluate.py            # Tests for evaluation metrics
-```
 
 ---
 
