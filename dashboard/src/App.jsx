@@ -213,7 +213,7 @@ function App() {
         </main>
       )}
       {activeTab === 'assessment' && (
-        <main className="main-content" style={{ position: "relative", zIndex: 10, maxWidth: "1400px", margin: "0 auto", width: "100%", overflowY: "visible" }}>
+        <main className="main-content" style={{ position: "relative", zIndex: 10, maxWidth: "1400px", margin: "0 auto", width: "100%", overflowY: "auto" }}>
           <header className="top-header no-print">
               <h1>NTC Application Assessment</h1>
               <p>Predicting default risk using alternative behavioral signals for thin-file borrowers.</p>
@@ -430,7 +430,7 @@ function App() {
       )}
 
       {activeTab === 'metrics' && (
-        <main className="main-content metrics-view fade-in no-print" style={{ position: "relative", zIndex: 10, maxWidth: "1400px", margin: "0 auto", width: "100%", overflowY: "visible" }}>
+        <main className="main-content metrics-view fade-in no-print" style={{ position: "relative", zIndex: 10, maxWidth: "1400px", margin: "0 auto", width: "100%", overflowY: "auto" }}>
           <header className="top-header">
             <h1>Model Metrics & Fairness</h1>
               <p>Audit reports and benchmark comparisons for the production ML engine.</p>
