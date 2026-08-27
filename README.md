@@ -12,8 +12,6 @@
 
 Credeasy is a full-stack machine-learning application that predicts loan default risk using **alternative (non-traditional) financial data**. It provides lenders with an explainable, real-time risk assessment dashboard and gives applicants **actionable recommendations** to improve their creditworthiness.
 
-Built for the **HyperFUSION 2026** hackathon — *Theme: Fin-Tech*
-
 ---
 
 ## 📑 Table of Contents
