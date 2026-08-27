@@ -4,7 +4,7 @@ from src.feature_engineering.features import engineer_features
 def test_engineer_features():
     df = pd.DataFrame({
         "credit_amount": [1000, 2000],
-        "account_check_status": ["< 0 DM", "no checking account"],
+        "account_check_status": ["< 0 INR", "no checking account"],
         "default": [0, 1]
     })
     df = engineer_features(df)
