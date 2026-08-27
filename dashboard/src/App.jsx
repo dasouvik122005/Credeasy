@@ -162,31 +162,31 @@ function App() {
     alert("JSON Copied to Clipboard!");
   };
 
-  if (activeTab === 'home') {
-    return (
-      <div className="landing-page">
-        <div className="landing-grid-bg"></div>
-        <div className="glow-blob blob-1"></div>
-        <div className="glow-blob blob-2"></div>
-        <div className="glow-blob blob-3"></div>
-        <nav className="landing-nav">
-          <div className="landing-logo">
-            <img src={logo} alt="Credeasy Logo" style={{ width: '45px', height: 'auto', borderRadius: '8px' }} />
-            <div className="landing-logo-text">
-              <span className="logo-main">Credeasy</span>
-              <span className="logo-sub">INTELLIGENCE</span>
-            </div>
+  return (
+    <div className="landing-page">
+      <div className="landing-grid-bg"></div>
+      <div className="glow-blob blob-1"></div>
+      <div className="glow-blob blob-2"></div>
+      <div className="glow-blob blob-3"></div>
+      <nav className="landing-nav">
+        <div className="landing-logo">
+          <img src={logo} alt="Credeasy Logo" style={{ width: '45px', height: 'auto', borderRadius: '8px' }} />
+          <div className="landing-logo-text">
+            <span className="logo-main">Credeasy</span>
+            <span className="logo-sub">INTELLIGENCE</span>
           </div>
-          <div className="landing-links">
-            <button className="landing-link active" onClick={() => setActiveTab('home')}>Home</button>
-            <button className="landing-link" onClick={() => setActiveTab('assessment')}>Risk Assessment</button>
-            <button className="landing-link" onClick={() => setActiveTab('metrics')}>Model Metrics</button>
-            <a href="https://github.com/dasouvik122005/Credeasy" target="_blank" rel="noreferrer" className="landing-github">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0012 2z"></path></svg>
-            </a>
-          </div>
-        </nav>
-        
+        </div>
+        <div className="landing-links">
+          <button className={`landing-link ${activeTab === 'home' ? 'active' : ''}`} onClick={() => setActiveTab('home')}>Home</button>
+          <button className={`landing-link ${activeTab === 'assessment' ? 'active' : ''}`} onClick={() => setActiveTab('assessment')}>Risk Assessment</button>
+          <button className={`landing-link ${activeTab === 'metrics' ? 'active' : ''}`} onClick={() => setActiveTab('metrics')}>Model Metrics</button>
+          <a href="https://github.com/dasouvik122005/Credeasy" target="_blank" rel="noreferrer" className="landing-github">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0012 2z"></path></svg>
+          </a>
+        </div>
+      </nav>
+      
+      {activeTab === 'home' && (
         <main className="landing-main">
           <div className="landing-badge">
             <span className="badge-dot"></span>
@@ -211,28 +211,10 @@ function App() {
             </button>
           </div>
         </main>
-      </div>
-    );
-  }
-
-  return (
-    <div className="fintech-dashboard">
-      <aside className="sidebar no-print">
-        <div className="brand">
-          <img src={logo} alt="Credeasy Logo" style={{ width: '32px', height: 'auto', borderRadius: '6px' }} />
-          <h2>Credeasy</h2>
-        </div>
-        <nav className="nav-links">
-          <a href="#" className={activeTab === 'home' ? 'active' : ''} onClick={(e) => { e.preventDefault(); setActiveTab('home'); }}>Home</a>
-          <a href="#" className={activeTab === 'assessment' ? 'active' : ''} onClick={(e) => { e.preventDefault(); setActiveTab('assessment'); }}>Risk Assessment</a>
-          <a href="#" className={activeTab === 'metrics' ? 'active' : ''} onClick={(e) => { e.preventDefault(); setActiveTab('metrics'); }}>Model Metrics</a>
-        </nav>
-      </aside>
-
-      <main className="main-content">
-        {activeTab === 'assessment' && (
-          <>
-            <header className="top-header no-print">
+      )}
+      {activeTab === 'assessment' && (
+        <main className="main-content" style={{ position: "relative", zIndex: 10, maxWidth: "1400px", margin: "0 auto", width: "100%", overflowY: "visible" }}>
+          <header className="top-header no-print">
               <h1>NTC Application Assessment</h1>
               <p>Predicting default risk using alternative behavioral signals for thin-file borrowers.</p>
             </header>
@@ -444,13 +426,13 @@ function App() {
                 )}
               </div>
             </div>
-          </>
-        )}
+        </main>
+      )}
 
-        {activeTab === 'metrics' && (
-          <div className="metrics-view fade-in no-print">
-            <header className="top-header">
-              <h1>Model Metrics & Fairness</h1>
+      {activeTab === 'metrics' && (
+        <main className="main-content metrics-view fade-in no-print" style={{ position: "relative", zIndex: 10, maxWidth: "1400px", margin: "0 auto", width: "100%", overflowY: "visible" }}>
+          <header className="top-header">
+            <h1>Model Metrics & Fairness</h1>
               <p>Audit reports and benchmark comparisons for the production ML engine.</p>
             </header>
 
@@ -518,9 +500,8 @@ function App() {
                 </div>
               </div>
             </div>
-          </div>
-        )}
-      </main>
+        </main>
+      )}
     </div>
   );
 }
